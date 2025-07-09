@@ -60,15 +60,8 @@ public class TestResourceManager implements Closeable {
     private TestStatus testStatus = new TestStatus(null);
 
     public TestResourceManager(Class<?> testClass) {
-        this(testClass, null, Collections.emptyList(), false);
-    }
-
-    public TestResourceManager(Class<?> testClass,
-            Class<?> profileClass,
-            List<TestResourceClassEntry> additionalTestResources,
-            boolean disableGlobalTestResources) {
-        this(testClass, profileClass, additionalTestResources, disableGlobalTestResources, Collections.emptyMap(),
-                Optional.empty());
+        this(testClass, null, Collections.emptyList(),
+                false, Collections.emptyMap(), Optional.empty());
     }
 
     public TestResourceManager(Class<?> testClass,

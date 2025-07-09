@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
@@ -47,6 +48,7 @@ public class QuarkusMainIntegrationTestExtension extends AbstractQuarkusTestWith
             .create("io.quarkus.test.main.integration");
 
     private static Map<String, String> devServicesProps;
+    private static String containerNetworkId;
 
     ArtifactLauncher.InitContext.DevServicesLaunchResult devServicesLaunchResult;
     Properties quarkusArtifactProperties;
@@ -112,6 +114,7 @@ public class QuarkusMainIntegrationTestExtension extends AbstractQuarkusTestWith
         devServicesLaunchResult = handleDevServices(extensionContext,
                 isDockerLaunch);
         devServicesProps = devServicesLaunchResult.properties();
+        containerNetworkId = devServicesLaunchResult.networkId();
 
         ExtensionContext root = extensionContext.getRoot();
         root.getStore(NAMESPACE).put("devServicesLaunchResult", devServicesLaunchResult);
@@ -133,7 +136,8 @@ public class QuarkusMainIntegrationTestExtension extends AbstractQuarkusTestWith
                         copyEntriesFromProfile(testProfileAndProperties.testProfile,
                                 context.getRequiredTestClass().getClassLoader()),
                         testProfileAndProperties.testProfile != null
-                                && testProfileAndProperties.testProfile.disableGlobalTestResources());
+                                && testProfileAndProperties.testProfile.disableGlobalTestResources(),
+                        devServicesProps, Optional.ofNullable(containerNetworkId));
                 testResourceManager.init(
                         testProfileAndProperties.testProfile != null ? testProfileAndProperties.testProfile.getClass().getName()
                                 : null);
